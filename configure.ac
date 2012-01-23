@@ -1,14 +1,12 @@
 AC_PREREQ([2.61])
-AC_INIT([dlvhex-stringplugin],[2.0.0],[roman@kr.tuwien.ac.at])
+AC_INIT([dlvhex-stringplugin],[2.0.0],[dlvhex-devel@lists.sourceforge.net])
 AC_CONFIG_SRCDIR([src/stringplugin.cpp])
+AC_CONFIG_HEADERS([src/config.h])
 
-MAJOR=`echo $PACKAGE_VERSION | sed "s,^\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\),\1,"`
-MINOR=`echo $PACKAGE_VERSION | sed "s,^\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\),\2,"`
-MICRO=`echo $PACKAGE_VERSION | sed "s,^\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\),\3,"`
-
-AC_DEFINE_UNQUOTED([STRINGPLUGIN_MAJOR], [$MAJOR], [Major version number of the string-plugin])
-AC_DEFINE_UNQUOTED([STRINGPLUGIN_MINOR], [$MINOR], [Minor version number of the string-plugin])
-AC_DEFINE_UNQUOTED([STRINGPLUGIN_MICRO], [$MICRO], [Micro version number of the string-plugin])
+# for documentation of the versioning scheme see
+# https://sourceforge.net/apps/trac/dlvhex/wiki/LibraryVersions
+DLVHEX_DEFINE_VERSION([STRINGPLUGIN],[$PACKAGE_VERSION])
+DLVHEX_DEFINE_VERSION([DLVHEX_ABI],[7.0.0])
 
 AM_INIT_AUTOMAKE
 
@@ -43,24 +41,14 @@ AC_PROG_LIBTOOL
 # check for other libraries here
 #
 
-#
-# of course we need dlvhex itself!
-#
-PKG_CHECK_MODULES([DLVHEX], [dlvhex >= 2.0])
-_PKG_CONFIG([DLVHEX_USERPLUGINDIR], [variable=userplugindir], [dlvhex >= 2.0])
-_PKG_CONFIG([DLVHEX_SYSPLUGINDIR], [variable=sysplugindir], [dlvhex >= 2.0])
-_PKG_CONFIG([DLVHEX_BINDIR], [variable=bindir], [dlvhex >= 2.0])
-DLVHEX_USERPLUGINDIR=$pkg_cv_DLVHEX_USERPLUGINDIR
-DLVHEX_SYSPLUGINDIR=$pkg_cv_DLVHEX_SYSPLUGINDIR
-DLVHEX_BINDIR=$pkg_cv_DLVHEX_BINDIR
-AC_SUBST(DLVHEX_USERPLUGINDIR)
-AC_SUBST(DLVHEX_SYSPLUGINDIR)
-AC_SUBST(DLVHEX_BINDIR)
+# check for dlvhex, sets various variables
+DLVHEX_REQUIRE([2.0.0])
 
-SAVE_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="$CPPFLAGS $DLVHEX_CFLAGS"
-AC_CHECK_HEADER([dlvhex/OnlineModelBuilder.hpp],,[AC_MSG_ERROR([Cannot find dlvhex headers!])])
-CPPFLAGS="$SAFE_CPPFLAGS"
+# checking for boost libs
+BOOST_REQUIRE([1.41.0])
+BOOST_SMART_PTR
+BOOST_STRING_ALGO
+BOOST_TOKENIZER
 
 # where the plugin will be installed by default.
 # running configure will take sysplugindir from dlvhex.pc,
@@ -75,13 +63,6 @@ if test "x$plugindir" == "x"; then
 	AC_MSG_ERROR([Cannot determine nonempty value for plugindir!])
 fi
 
-
-# checking for boost libs
-BOOST_REQUIRE([1.41.0])
-BOOST_SMART_PTR
-BOOST_STRING_ALGO
-BOOST_TOKENIZER
-
 #
 # all needed makefiles
 #
@@ -89,6 +70,7 @@ AC_CONFIG_FILES([
            Makefile 
            src/Makefile
            examples/Makefile
+           testsuite/Makefile
 ])
 
 AC_OUTPUT

@@ -2,9 +2,14 @@
 //
 // this include is necessary
 //
-#include "dlvhex/PluginInterface.h"
-#include "dlvhex/Term.hpp"
-#include "dlvhex/Registry.hpp"
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H */
+
+#include <dlvhex2/PluginInterface.h>
+#include <dlvhex2/Term.h>
+#include <dlvhex2/Registry.h>
 
 #include <string>
 #include <sstream>
@@ -364,7 +369,7 @@ namespace dlvhex {
       
 			StringPlugin() 
 			{
-				setNameVersion(PACKAGE_TARNAME, STRINGPLUGIN_MAJOR, STRINGPLUGIN_MINOR, STRINGPLUGIN_MICRO);
+				setNameVersion(PACKAGE_TARNAME,STRINGPLUGIN_VERSION_MAJOR,STRINGPLUGIN_VERSION_MINOR,STRINGPLUGIN_VERSION_MICRO);
 			}
 		
 			virtual std::vector<PluginAtomPtr> createAtoms(ProgramCtx&) const
@@ -399,15 +404,10 @@ namespace dlvhex {
 } // namespace dlvhex
 
 //
-// and let it be loaded by dlvhex!
+// let it be loaded by dlvhex!
 //
-//extern "C"
-//dlvhex::string::StringPlugin*
-//PLUGINIMPORTFUNCTION()
-//{
-//	setNameVersion(PACKAGE_TARNAME, STRINGPLUGIN_MAJOR, STRINGPLUGIN_MINOR, STRINGPLUGIN_MICRO);
-//	return &dlvhex::string::theStringPlugin;
-//}
+
+IMPLEMENT_PLUGINABIVERSIONFUNCTION
 
 // return plain C type s.t. all compilers and linkers will like this code
 extern "C"
