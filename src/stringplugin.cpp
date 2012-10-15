@@ -12,74 +12,6 @@
 namespace dlvhex {
   namespace string {
 
-
-
-
-
-
-
-    class NonmonAtom : public PluginAtom
-    {
-    public:
-      
-      NonmonAtom()
-      {
-	addInputPredicate();
-        
-	setOutputArity(1);
-      }
-      
-      virtual void
-      retrieve(const Query& query, Answer& answer) throw (PluginError)
-      {
-
-bool a = false;
-bool b = false;
-
-for (AtomSet::const_iterator it = query.getInterpretation().begin(); it != query.getInterpretation().end(); ++it){
-	if (it->getArgument(1).getString() == "a") a = true;
-	if (it->getArgument(1).getString() == "b") b = true;
-}
-
-//AtomSet inputfacts;
-//query.getInterpretation().matchPredicate(inputfactspred, inputfacts);
-		Tuple outa;
-		outa.push_back(Term("a", false));
-		Tuple outb;
-		outb.push_back(Term("b", false));
-
-	if (a == false && b == false){
-		answer.addTuple(outb);
-	}
-
-	if (a == true && b == false){
-		answer.addTuple(outa);
-	}
-
-	if (a == false && b == true){
-		answer.addTuple(outa);
-	}
-
-	if (a == true && b == true){
-		answer.addTuple(outa);
-		answer.addTuple(outb);
-	}
-      }
-    };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     class ShaAtom : public PluginAtom
     {
     public:
@@ -424,14 +356,12 @@ for (AtomSet::const_iterator it = query.getInterpretation().begin(); it != query
 	boost::shared_ptr<PluginAtom> cmpatom(new CmpAtom);
 	boost::shared_ptr<PluginAtom> concatatom(new ConcatAtom);
 	boost::shared_ptr<PluginAtom> strstratom(new strstrAtom);
-	boost::shared_ptr<PluginAtom> nonmonatom(new NonmonAtom);
-	
+
         a["sha1sum"] = shaatom;
         a["split"] = splitatom;
         a["cmp"] = cmpatom;
         a["concat"] = concatatom;
         a["strstr"] = strstratom;
-        a["nonmon"] = nonmonatom;
       }
       
       virtual void
